@@ -786,8 +786,7 @@ class JanusGCPOTrainer(Trainer):
 
         # initial mask
         first_10_mask = torch.zeros_like(completion_mask, dtype=bool)
-        #[fix]
-        # first_10_mask[:, :ar_topk_percent] = True
+
         first_10_mask[:, :ar_topk] = True
         
         # entrpy gradient mask
@@ -797,8 +796,7 @@ class JanusGCPOTrainer(Trainer):
         # similarity mask
         cos_sim_valid = cos_sim_list.clone()
         cos_sim_valid[entropy_mask | first_10_mask] = float('inf')
-        #[fix]
-        # top_values, top_indices = torch.topk(cos_sim_valid, k=simi_topk_percent, dim=1, largest=False)
+
         top_values, top_indices = torch.topk(cos_sim_valid, k=simi_topk, dim=1, largest=False)
         cos_sim_mask = torch.zeros_like(completion_mask, dtype=bool)
         batch_indices = torch.arange(completion_mask.size(0)).unsqueeze(1).expand_as(top_indices)
